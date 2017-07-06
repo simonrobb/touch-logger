@@ -1,6 +1,6 @@
 ## Requirements
   - A Raspberry Pi 3 is strongly recommended if the Pi will be displaying the gathered data in Chronograf. Alternatively if the Pi is used as a headless web server, an older version may be used.
-  - An I2C sensor on address 0x21
+  - An I2C moisture sensor on address 0x20
   - A pot plant 🌻
 
 ## Provision

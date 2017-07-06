@@ -4,7 +4,7 @@ from influxdb import InfluxDBClient
 from Sensor import Sensor
 
 # Settings
-addr = 0x21
+addr = 0x20
 host = "localhost"
 port = 8086
 user = "admin"
