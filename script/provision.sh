@@ -31,3 +31,7 @@ block_comment "Install pip and python dependencies"
 sudo apt-get install -y python-pip
 sudo pip install influxdb
 sudo pip install --upgrade influxdb
+
+# Seed influx
+block_comment "Seeding Influx database"
+influx -execute "CREATE DATABASE Logger"

@@ -1,37 +1,36 @@
 import time
 import datetime
-from influxdb import InfluxDBClient
+from lib import Logger
 from Sensor import Sensor
 
 # Settings
-addr = 0x20
-host = "localhost"
-port = 8086
-user = "admin"
-password = "admin"
-dbname = "Logger"
+i2c_addr = 0x20
+interval = 10
 
-# Connect to the sensor
-sensor = Sensor(1, addr)
+logger = Logger.Logger(interval)
+sensor = None
 
-# Create the InfluxDB object
-influx = InfluxDBClient(host, port, user, password, dbname)
+# Take an I2C sample
+def sample():
+  global sensor
+  if (sensor is None):
+    sensor = Sensor(1, i2c_addr)
 
-print "Timestamp\t\t\tMoisture\tTemperature"
-while True:
-  capacitance = sensor.moist()
-  temperature = sensor.temp()
-  iso = time.ctime()
+  try:
+    capacitance = sensor.moist()
+    temperature = sensor.temp()
+    print "%s\t%d\t\t%d" % (str(datetime.datetime.now()), capacitance, temperature)
 
-  print "%s\t%d\t\t%d" % (str(datetime.datetime.now()), capacitance, temperature)
-  json_body = [{
-    "measurement": "sensor",
-    "tags": {},
-    "time": iso,
-    "fields": {
+    fields = {
       "capacitance_1": capacitance,
       "temperature": temperature
     }
-  }]
-  influx.write_points(json_body)
-  time.sleep(10)
+    return fields
+
+  except IOError:
+    sensor = None
+
+# Start the logger
+print "Timestamp\t\t\tMoisture\tTemperature"
+logger.add_handler('sensor', sample)
+logger.start()
