@@ -1,36 +1,16 @@
-import time
-import datetime
 from lib import Logger
-from Sensor import Sensor
+from app.Handlers import Touch, SDI
 
 # Settings
-i2c_addr = 0x20
+i2c_addr_10 = 0x21
+i2c_addr_20 = 0x22
+i2c_addr_30 = 0x23
 interval = 10
 
+# Initialise and start the logger
 logger = Logger.Logger(interval)
-sensor = None
-
-# Take an I2C sample
-def sample():
-  global sensor
-  if (sensor is None):
-    sensor = Sensor(1, i2c_addr)
-
-  try:
-    capacitance = sensor.moist()
-    temperature = sensor.temp()
-    print "%s\t%d\t\t%d" % (str(datetime.datetime.now()), capacitance, temperature)
-
-    fields = {
-      "capacitance_1": capacitance,
-      "temperature": temperature
-    }
-    return fields
-
-  except IOError:
-    sensor = None
-
-# Start the logger
-print "Timestamp\t\t\tMoisture\tTemperature"
-logger.add_handler('sensor', sample)
+# logger.add_handler('touch', Touch.Handler(10, i2c_addr_10))
+# logger.add_handler('touch', Touch.Handler(20, i2c_addr_20))
+# logger.add_handler('touch', Touch.Handler(30, i2c_addr_30))
+logger.add_handler('touch_sdi', SDI.Handler())
 logger.start()

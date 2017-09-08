@@ -23,9 +23,13 @@ class Sensor:
 		self.reset()
 		self.address = new_addr
 
-	def moist(self):
-		# To read soil moisture, read 2 bytes from register 0
+	def cap(self):
+		# To read capacitance, read 2 bytes from register 0
 		return self.get_reg(0)
+
+	def moist(self):
+		# To read soil capacitance, read 2 bytes from register 10 (0x0A)
+		return self.get_reg(10)
 
 	def temp(self):
 		# To read temperature, read 2 bytes from register 5
